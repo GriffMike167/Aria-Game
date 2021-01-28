@@ -1,6 +1,6 @@
 const express = require("express");
-const controller = require("./restaurant.controller");
-const auth = require("../auth/auth.service");
+const controller = require("./restaurantcontroller");
+const auth = require("../auth/authservice");
 
 const router = express.Router();
 

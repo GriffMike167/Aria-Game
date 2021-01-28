@@ -1,13 +1,13 @@
-const express = requires("express")
+const express = require("express")
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const path = require("path");
 
-const users = require("./routes/api/user");
-const restaurants = require("./routes/api/restaurant");
-const meals = require("./routes/api/meal");
-const orders = require("./routes/api/order");
+const users = require("./routes/user");
+const restaurants = require("./routes/restaurant");
+const meals = require("./routes/meal");
+const orders = require("./routes/order");
 
 const app = express();
 

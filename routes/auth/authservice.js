@@ -1,8 +1,8 @@
-const config = require("../../../config/keys");
+const config = require("../../config/keys");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
 const compose = require("composable-middleware");
-const User = require("../user/user.model");
+const User = require("../user/usermodel");
 const validateJwt = expressJwt({ secret: config.secretOrKey });
 
 function isAuthenticated() {

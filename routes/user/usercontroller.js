@@ -3,11 +3,11 @@ const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 
 // Load input validation
-const validateRegisterInput = require("../../../validation/register");
-const validateLoginInput = require("../../../validation/login");
+const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
 
 // Load User model
-const User = require("./user.model");
+const User = require("./usermodel");
 
 function handleError(res, err) {
   return res.send(500, err);

@@ -1,24 +1,24 @@
-import { find, findById, create } from "./restaurantmodel";
-import { create as _create } from "../meal/mealmodel";
-import { merge } from "lodash";
+const Restaurant = require("./restaurantmodel");
+const Meal = require("../meal/mealmodel");
+const _ = require("lodash");
 
 function handleError(res, err) {
   return res.send(500, err);
 }
 
 // Get list of restaurants
-export function index(req, res) {
-  find(function(err, restaurants) {
+exports.index = function(req, res) {
+  Restaurant.find(function(err, restaurants) {
     if (err) {
       return handleError(res, err);
     }
     return res.json(200, restaurants);
   });
-}
+};
 
 // Get a single restaurant
-export function show(req, res) {
-  findById(req.params.id)
+exports.show = function(req, res) {
+  Restaurant.findById(req.params.id)
     .populate("_meals")
     .exec(function(err, restaurant) {
       if (err) {
@@ -31,10 +31,10 @@ export function show(req, res) {
 
       return res.json(restaurant);
     });
-}
+};
 
-export function create(req, res) {
-  _create(req.body._meals, function(err) {
+exports.create = function(req, res) {
+  Meal.create(req.body._meals, function(err) {
     if (err) {
       return handleError(res, err);
     }
@@ -47,7 +47,7 @@ export function create(req, res) {
     const _restaurant = req.body;
     _restaurant._meals = _meals;
 
-    create(_restaurant, function(err, restaurant) {
+    Restaurant.create(_restaurant, function(err, restaurant) {
       if (err) {
         return handleError(res, err);
       }
@@ -57,21 +57,21 @@ export function create(req, res) {
       return res.json(201, restaurant);
     });
   });
-}
+};
 
 // Updates an existing restaurant in the DB.
-export function update(req, res) {
+exports.update = function(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  findById(req.params.id, function(err, restaurant) {
+  Restaurant.findById(req.params.id, function(err, restaurant) {
     if (err) {
       return handleError(res, err);
     }
     if (!restaurant) {
       return res.send(404);
     }
-    const updated = merge(restaurant, req.body);
+    const updated = _.merge(restaurant, req.body);
     updated.save(function(err) {
       if (err) {
         return handleError(res, err);
@@ -80,11 +80,11 @@ export function update(req, res) {
       return res.json(200, restaurant);
     });
   });
-}
+};
 
 // Deletes a restaurant from the DB.
-export function destroy(req, res) {
-  findById(req.params.id, function(err, restaurant) {
+exports.destroy = function(req, res) {
+  Restaurant.findById(req.params.id, function(err, restaurant) {
     if (err) {
       return handleError(res, err);
     }
@@ -98,4 +98,4 @@ export function destroy(req, res) {
       return res.send(204);
     });
   });
-}
+};

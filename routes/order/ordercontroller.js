@@ -1,6 +1,6 @@
-import { find, findById, create } from "./ordermodel";
-import { merge } from "lodash";
-import StateMachine from "javascript-state-machine";
+const Order = require("./ordermodel");
+const _ = require("lodash");
+const StateMachine = require("javascript-state-machine");
 
 function createStateMachine(order) {
   return new StateMachine({
@@ -20,8 +20,8 @@ function handleError(res, err) {
 }
 
 // Get list of orders
-export function index(req, res) {
-  find({ _user: req.user._id })
+exports.index = function(req, res) {
+  Order.find({ _user: req.user._id })
     .sort("-created_at")
     .populate("_restaurant")
     .exec(function(err, orders) {
@@ -30,11 +30,11 @@ export function index(req, res) {
       }
       return res.json(200, orders);
     });
-}
+};
 
 // Get list of restaurant orders
-export function restaurant_index(req, res) {
-  find({ _restaurant: req.user._id })
+exports.restaurant_index = function(req, res) {
+  Order.find({ _restaurant: req.user._id })
     .populate("_restaurant")
     .exec(function(err, orders) {
       if (err) {
@@ -42,11 +42,11 @@ export function restaurant_index(req, res) {
       }
       return res.json(200, orders);
     });
-}
+};
 
 // Get a single order
-export function show(req, res) {
-  findById(req.params.id)
+exports.show = function(req, res) {
+  Order.findById(req.params.id)
     .populate("_meals")
     .populate("_user")
     .populate("_restaurant")
@@ -61,10 +61,10 @@ export function show(req, res) {
 
       return res.json(order);
     });
-}
+};
 
-export function create(req, res) {
-  create({ ...req.body, _user: req.user._id }, function(err, order) {
+exports.create = function(req, res) {
+  Order.create({ ...req.body, _user: req.user._id }, function(err, order) {
     if (err) {
       return handleError(res, err);
     }
@@ -73,14 +73,14 @@ export function create(req, res) {
 
     return res.json(201, order);
   });
-}
+};
 
 // Updates an existing order in the DB.
-export function update(req, res) {
+exports.update = function(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  findById(req.params.id, function(err, order) {
+  Order.findById(req.params.id, function(err, order) {
     if (err) {
       return handleError(res, err);
     }
@@ -92,7 +92,7 @@ export function update(req, res) {
       return res.status(403).json({
         status: `Not a valid transition from ${order.status} to ${req.body.status}.`
       });
-    const updated = merge(order, req.body);
+    const updated = _.merge(order, req.body);
     updated.save(function(err) {
       if (err) {
         return handleError(res, err);
@@ -101,11 +101,11 @@ export function update(req, res) {
       return res.json(200, order);
     });
   });
-}
+};
 
 // Deletes a order from the DB.
-export function destroy(req, res) {
-  findById(req.params.id, function(err, order) {
+exports.destroy = function(req, res) {
+  Order.findById(req.params.id, function(err, order) {
     if (err) {
       return handleError(res, err);
     }
@@ -119,4 +119,4 @@ export function destroy(req, res) {
       return res.send(204);
     });
   });
-}
+};
